@@ -1,0 +1,35 @@
+FUNCTION ZCU_UPDATE_SIP.
+*"----------------------------------------------------------------------
+*"*"Local Interface:
+*"  IMPORTING
+*"     REFERENCE(IV_SIPNO) TYPE  Z_SIPNO
+*"     REFERENCE(IS_HEADER_INS) TYPE  ZCLCU_SIP_MPC=>TS_HEADERSIPWR
+*"     REFERENCE(IS_HEADER_UPD) TYPE  ZCLCU_SIP_MPC=>TS_HEADERSIPWR
+*"     REFERENCE(IT_ITEM_INS) TYPE  ZCLCU_SIP_MPC=>TT_ITEM
+*"     REFERENCE(IT_ITEM_UPD) TYPE  ZCLCU_SIP_MPC=>TT_ITEM
+*"     REFERENCE(IT_ITEM_DEL) TYPE  ZCLCU_SIP_MPC=>TT_ITEM
+*"     REFERENCE(IT_ROUTING_INS) TYPE  ZCLCU_SIP_MPC=>TT_APPROVALFLOW
+*"     REFERENCE(IT_ROUTING_UPD) TYPE  ZCLCU_SIP_MPC=>TT_APPROVALFLOW
+*"     REFERENCE(IT_ROUTING_DEL) TYPE  ZCLCU_SIP_MPC=>TT_APPROVALFLOW
+*"     REFERENCE(IT_FPCITEM_INS) TYPE  ZCLCU_SIP_MPC=>TT_FPCITEM
+*"     REFERENCE(IV_DELETE) TYPE  C
+*"----------------------------------------------------------------------
+DATA: ls_header LIKE ztcu_sipheader,
+      ls_item LIKE ztcu_sipitem.
+
+MOVE-CORRESPONDING is_header_ins TO ls_header.
+
+INSERT INTO ZTCU_SIPHEADER VALUES ls_header.
+IF sy-subrc <> 0.
+
+ENDIF.
+
+LOOP AT it_item_ins ASSIGNING FIELD-SYMBOL(<ls_item_ins>).
+  MOVE-CORRESPONDING <ls_item_ins> TO ls_item.
+   ls_item-Itemcode =  <ls_item_ins>-Material.
+  INSERT INTO ZTCU_SIPITEM VALUES ls_item.
+
+ENDLOOP.
+
+
+ENDFUNCTION.
